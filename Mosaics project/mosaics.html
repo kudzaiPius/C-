@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<!--
+	@author Kudzai Pius Whande
+	@date 2015-08-15
+	
+	Tile Placement Demo. Makes use of the utilities script to generate a direction field,
+	and orient mosaic tiles according to this field at calculated points. This is sufficient
+	for the time being for proof of concept : GIVEN N-points, PLACE TILES WITH GIVEN ORIENTATION]
+	TO PRODUCE A CONVINCING MOSAIC.
+	
+	Issues for future consideration are the tile size, a possible blended tile grout color...
+	
+	CORRECTIONS :
+		1) MOVE ALL STYLING TO A CSS AFTER LAYOUT IS DEFINED
+		2) ADD OPTIONS FOR USER SELECTED IMAGES
+!-->
+<html>
+	<head>
+		<title>Predetermined Mosaic List</title>
+		<style>
+			body { margin: 0; }
+			canvas { width: 100%; height: 100% }
+			input[type='text'] { font-size: 24px; }
+			input[type='number'] { font-size: 24px; }
+			input[type='file'] { font-size: 24px; }
+		</style>
+	</head>
+	
+	<body>
+		Base Image
+		<select id="select" onchange="toggleGenVis()">
+			<option disabled selected> -- select an option -- </option>
+			<option>LIBYAN-SIBYL</option>
+			<option>HOPPER</option>
+			<option>CHEETAH</option>
+		</select>
+		<br>
+		
+		<font size="6">Tile Number :  </font>
+		<input type="number" name="tiles" id="tiles" size="10" value="2500">
+		<br>
+		
+		<button type="button" id="genBtn" hidden="true" onclick="gen()">
+			<font size="6">Generate Mosaic</font>
+		</button>
+		
+		<canvas id="myCanvas" width="100%" height="100%"></canvas>
+		
+		<script src="js/utilities.js"></script>
+		<script src="js/utilities2.js"></script>
+		<script src="js/sobel.js"></script> 
+		<script src="js/underscore.js"></script> 
+		
+		<script>
+			var grout = "#000000";
+			
+			var num_tiles = document.getElementById("tiles");
+			//console.log(num_tiles.value);
+			
+			var sel =  document.getElementById("select");
+			var btn = document.getElementById("genBtn");
+			
+			// make sure on refresh, selected option is the default prompt
+			sel.selectedIndex = 0;
+			
+			var myCanvas = document.getElementById('myCanvas');
+			var ctx = myCanvas.getContext('2d');
+			
+			// variables to hold canvas/image height and width
+			var w = 0;
+			var h = 0;
+			
+			// select index
+			var selIndex = 0;
+			
+			// image to work on
+			var new_img;
+			
+			document.body.appendChild(myCanvas);
+			
+			// create a list to hold the addresses matching values
+			var addresses = [ "images/libyan-sibyl.jpg", "images/hopper.jpg", "images/cat.jpg" ];
+			
+			// access input fields
+			var tileF = document.getElementById('tiles');
+			
+			//var grout = "#000000";
+			//genMosaic("libyan-sibyl.jpg", "libyan-sibyl.jpg", 560, 2500, true);
+			
+			/************************* INTERACTION FUNCTIONS ***************************/
+			function displayInput()
+			{
+				new_img = new Image();
+				new_img.src = addresses[selIndex];
+				new_img.onload = set_w_h;
+				
+				//ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
+				
+				// reset canvas variables to match the input image
+				myCanvas.width = w;
+				myCanvas.height = h;
+				
+				//ctx.restore(); // restore transforms
+				ctx.drawImage(new_img, 0, 0); // draw image to canvas
+				//ctx.putImageData(new_img, 0, 0);
+			}
+			
+			function toggleGenVis()
+			{
+				btn.hidden = false;
+				selIndex = sel.selectedIndex-1;
+				displayInput();
+			}
+			
+			function gen()
+			{
+				console.log("num_tiles : " + num_tiles.value);
+				genMosaic(addresses[selIndex], addresses[selIndex], w, num_tiles.value, true);
+			}
+			
+			function set_w_h()
+			{
+				w = new_img.width;
+				h = new_img.height;
+			}
+			/***************************************************************************/
+		</script>
+		
+	</body>
+</html>

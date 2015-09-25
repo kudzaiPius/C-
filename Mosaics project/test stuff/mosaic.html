@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<!--
+	@author Kudzai Pius Whande
+	@date 2015-08-15
+	
+	Tile Placement Demo. Makes use of the utilities script to generate a direction field,
+	and orient mosaic tiles according to this field at calculated points. This is sufficient
+	for the time being for proof of concept : GIVEN N-points, PLACE TILES WITH GIVEN ORIENTATION]
+	TO PRODUCE A CONVINCING MOSAIC.
+	
+	Issues for future consideration are the tile size, a possible blended tile grout color...
+!-->
+<html>
+	<head>
+		<title>Tile Placement</title>
+		<style>
+			body { margin: 0; }
+			canvas { width: 100%; height: 100% }
+		</style>
+	</head>
+	
+	<body>
+		<canvas id="myCanvas" width="100%" height="100%"></canvas>
+		
+		<script src="js/utilities.js"></script>
+	<script src="js/sobel.js"></script> 
+		<script src="js/underscore.js"></script> 
+		
+		<script>
+			var myCanvas = document.getElementById('myCanvas');
+			var ctx = myCanvas.getContext('2d');
+			var image = new Image();
+			image.src = /**/"images/libyan-sibyl.jpg";
+			image.onload = drawImage;
+
+			function drawImage(event)
+			{
+				var w = image.width;
+				var h = image.height;
+				
+				var tile_num = 2500; // 50 x 50
+				
+				var tile_w = Math.round( (w/50)*0.90);
+				var tile_w_adj = ( (w/50)-tile_w);
+				
+				var tile_h = Math.round( (h/50)*0.90);
+				var tile_h_adj = ( (h/50)-tile_h);
+				
+				myCanvas.width = w;
+				myCanvas.height = h;
+				
+				ctx.drawImage(image, 0, 0);
+				var imageData = ctx.getImageData(0, 0, w, h);
+				
+				var img2d = imageData2d(imageData.data, w, h);
+				
+				var imgSobel = Sobel(imageData);
+				
+				var imgSobel2d = imageData2d( imgSobel.data, w, h );
+				
+				var img_rot = bvh2(imgSobel2d);
+				
+				// clear the canvas before drawing tiles
+				ctx.clearRect(0, 0, w, h);
+				
+				for(var i=0; i<50; i++)
+				{
+					for(var j=0; j<50; j++)
+					{
+						ctx.save();
+						
+						var pxData = img2d[ (tile_h*i) + Math.round(tile_h/2) ][ (tile_w*j) + Math.round(tile_w/2) ];
+						
+						// get the right color
+						ctx.fillStyle = rgbToHex(pxData[0],pxData[1],pxData[2]);
+						
+						// move origin to tile centre
+						ctx.translate( ((tile_w*j) + Math.round(tile_w/2)) , ((tile_h*i) + Math.round(tile_h/2)) );
+						
+						// set a <RANDOM FOR NOW> rotation
+						//ctx.rotate(Math.PI/_.random(10));//4);
+						if( (img_rot[i][j]) == NaN )
+						{
+							ctx.rotate(Math.PI/4);
+						}
+						else
+						{
+							ctx.rotate( (img_rot[i][j]) );
+							//console.log(img_rot[i][j]);
+						}
+							
+						
+						// fill rectangle withthe given color
+						ctx.fillRect( /*((tile_w*j)+tile_w_adj), ((tile_h*i)+tile_h_adj)*/-tile_w/2, -tile_h/2, tile_w*0.75, tile_h*0.75);
+						
+						// reset rotation
+						ctx.restore();
+					}
+				}
+			}
+		</script>
+		
+	</body>
+</html>

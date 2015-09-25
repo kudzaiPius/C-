@@ -1,0 +1,107 @@
+<!DOCTYPE html.
+<html>
+	<head>
+		<title>CENTROID TEST 2</title>
+		<style>
+			body { margin: 0; }
+			canvas { width: 350px; height: 350px }
+			.inline_div { display : inline-block; }
+		</style>
+	</head>
+	
+	<body>
+		<script src="js/utilities.js"></script>
+		
+		<div id="div2" class="inline_div">
+			<img id="base image" src="images/voronoi2.bmp" alt="centroid_test_image2" style="width:350px;height:350px;>
+		</div>
+		<div id="div2" class="inline_div">
+			<button id="calc_btn" onclick="draw()">CALC_CENTROIDS</button>
+			<!--<p>[<b>^^</b>THIS IS WHERE RESULTS WILL APPEAR<b>^^</b>]</p>!-->
+		</div>
+		<div id="div3" class="inline_div">
+			<p id="canvas paragraph">[THIS IS WHERE CANVAS SHOULD BE]</p>
+			<canvas id="myCanvas" >
+		</div>
+		
+		<script>
+			var my_img = document.getElementById("base image");
+			var canvas = document.getElementById("myCanvas");
+			var valid_ctx = canvas.getContext('2d');
+			
+			// use virtual canvas to get pixel data
+			var myCanvas = document.createElement('canvas');
+			var ctx = myCanvas.getContext('2d');
+			 
+			// extract image dimensions
+			var w = my_img.width;
+			var h = my_img.height;
+			
+			// set canvas dimensions
+			myCanvas.width = w;
+			myCanvas.height = h;
+			
+			canvas.width = w;
+			canvas.height = h;
+			
+			function draw()
+			{
+				// make the paragraph invisible
+				document.getElementById("canvas paragraph").style.visibility = "hidden";
+				
+				// get image data for use in the algorithm
+				ctx.drawImage(my_img, 0, 0);
+				var imgData = ctx.getImageData(0,0, w, h);
+				var img2d = imageData2d(imgData.data, w, h);
+				
+				// assign array for pixel data
+				var p_colors = new Array(0);
+				
+				// populate p_colors with the right colors
+				/**/for(var i=0; i<h; i++)
+				{
+					for(var j=0; j<w; j++)
+					{
+						// if color isn't already recorded
+						if( p_colors.length == 0 )
+						{
+							// add the color
+							p_colors.push( [img2d[i][j][0], img2d[i][j][1], img2d[i][j][2], img2d[i][j][3]] );
+						}						
+						else if( multi_indexOf(p_colors, img2d[i][j]) == -1)
+						{
+							// add the color
+							p_colors.push( [img2d[i][j][0], img2d[i][j][1], img2d[i][j][2], img2d[i][j][3]] );
+							//p_colors.push(img2d[i][j]);
+						}
+						else
+						{
+							//console.log("already in");
+						}
+					}
+				}/**/
+				//console.log(p_colors);
+				
+				// calculate centroids
+				var my_centroids = calc_centroids((350*350), 350, 350, imgData.data, p_colors);
+				
+				// debug :
+				//console.log(my_centroids);
+				
+				// draw picture, then indicate centroids in black
+				valid_ctx.drawImage(my_img, 0, 0);
+				
+				//console.log("values at pos 0 : " + my_centroids[0]);
+				ctx.fillStyle = "#000000";
+				for(var j in my_centroids)
+				{
+					var pos = my_centroids[j];
+					valid_ctx.fillRect(pos[1], pos[0], 5, 5);
+				}
+				
+				// make button invisible after click and onclick executed
+				document.getElementById("calc_btn").style.visibility = "hidden";
+			}
+		</script>
+	</body>
+</html>

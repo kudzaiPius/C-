@@ -1,0 +1,3 @@
+## COMPUTER GENERATED MOSAICS
+
+A visualization project that implements a mosaic generator. Divides the canvas into tile spaces given a size(even, and in some cases, limited to perfect squares), and draws the tiles at a size that allows minimal tile grout displayed, fewer overlapping tiles and rotations along the direction field defined by the image edges. Edges can be user defined or auto-computed using a sobel filter for edge detection.
