@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<style>
+table,th,td {
+  border : 1px solid black;
+  border-collapse: collapse;
+}
+th,td {
+  padding: 5px;
+}
+</style>
+<body>
+
+<button type="button" onclick="loadDoc()">Get my CD collection</button>
+<br><br>
+<table id="demo"></table>
+
+<script>
+function loadDoc() {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (xhttp.readyState == 4 && xhttp.status == 200) {
+      myFunction(xhttp);
+        console.log("passed");
+    }
+   else
+     {
+        //console.log("failed");
+     }
+  }
+  xhttp.open("GET", "http://api.openweathermap.org/data/2.5/weather?q=London", true);
+  xhttp.send();
+}
+function myFunction(xml) {
+  var i;
+  var xmlDoc = xml.responseText;
+  console.log(xmlDoc);
+}
+</script>
+
+</body>
+</html>

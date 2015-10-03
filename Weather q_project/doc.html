@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<style>
+	#header {
+		background-color:black;
+		color:white;
+		text-align:center;
+		padding:5px;
+	}
+	table,th,td {
+	  border : 1px solid black;
+	  border-collapse: collapse;
+	}
+	th,td {
+	  padding: 5px;
+	}
+	div {
+		
+	}
+	P {
+		
+	}
+
+	input[type='text'] { font-size: 24px; }
+</style>
+<body>
+	<div id="header">
+		<h1>Optimized Weather display</h1>
+	</div>
+	
+	<div id="content pane">
+		<font size="6">City :  </font>
+		<input type="text" name="city" id="city" size="10">
+		<br>
+		
+		<button type="button" id="genBtn" onclick="loadDoc()">
+		<font size="6">weather</font>
+		</button>
+	</div>
+
+	<script>
+		// create variable to access the input field
+		var city_field = document.getElementById("city");
+		
+		function loadDoc()
+		{
+			var xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function() {
+				if (xhttp.readyState == 4 && xhttp.status == 200)
+				{
+					myFunction(xhttp);
+					
+					// debug
+					//console.log("passed");
+				}
+				else
+				{
+					// debug
+					//console.log("failed");
+				}
+			}
+			xhttp.open("GET", "http://api.openweathermap.org/data/2.5/weather?q=" + city_field.value, true);
+			xhttp.send();
+		}
+		
+		function myFunction(xml)
+		{
+			var i;
+			var xmlDoc = xml.responseText;
+			console.log(xmlDoc);
+			
+			// test if output is json-convertible
+			//console.log(JSON.parse(xmlDoc));
+			
+			weather_parser(JSON.parse(xmlDoc));
+		}
+		
+		function weather_parser(json)
+		{
+			// create a container div for the two sections
+			var cont_div = document.createElement("div");
+			
+			// create a division to hold the info for the city
+			var new_div = document.createElement("div");
+			cont_div.float = "float";
+			
+			// get the icon for the weather condition
+			var icon_id = json["weather"][0]["icon"];
+			// debug
+			//console.log(icon_id);
+			
+			// the flag image
+			var flag = get_weather_icon(icon_id);
+			
+			// add flag to the div
+			/*new*/cont_div.appendChild(flag);
+			
+			// capture main section of the json object
+			var main = json["main"];
+			
+			// String to hold weather presentation
+			var weather_string = [];
+			
+			weather_string[0] = "" + json["name"] + "," + json["sys"]["country"] ;
+			
+			weather_string[1] = json["weather"][0]["description"];
+			
+			weather_string[2] = "temperature from " + main["temp_min"] + " to " + 
+				main["temp_max"] + String.fromCharCode(176) + "C, wind " + json["wind"]["speed"] + "m/s. clouds " +
+				json["clouds"]["all"] + "%, " + main["pressure"] + " hpa" ;
+			
+			weather_string[3] = "Geo coords [ " + json["coord"]["lon"] + ", " + 
+				json["coord"]["lat"] + " ]" ;
+				
+			// debug
+			console.log(weather_string);
+			
+			// add paragraphs to the division for the weather_string list
+			for(var i=0; i<4; i++)
+			{
+				var par =  document.createElement("paragraph");
+				var brk =  document.createElement("br");
+				par.innerHTML = weather_string[i];
+				
+				// debug
+				//console.log(par.innerHTML);
+				
+				// add to div
+				new_div.appendChild(par);
+				new_div.appendChild(brk);
+			}
+			
+			// append the info section to container division
+			cont_div.appendChild(new_div);
+			
+			// append the division to the document
+			document.getElementById("content pane").appendChild(/*new*/cont_div);
+		}
+		
+		function get_weather_icon(icon_id)
+		{
+			// HAVE TO DO SOMETHING WITH THIS CANVAS!!!!
+			var new_canv = document.createElement("canvas");
+			
+			var img = new Image();
+			img.src = "http://openweathermap.org/img/w/" + icon_id + ".png";
+			img.onload = set_w_h(new_canv);
+			
+			/*
+			 * Set the width and height of a given canvas
+			 * This is the canvas we are going to render the image on
+			*/
+			function set_w_h(canv)
+			{
+				canv.width = img.width;
+				canv.height = img.height;
+			}
+			
+			// debug
+			//console.log(img);
+			return img;
+		}
+	</script>
+
+</body>
+</html>
