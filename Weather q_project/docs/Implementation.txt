@@ -11,3 +11,5 @@
 - The 'find' query refreshes per search prompt, but to allow comparison of weather conditions for different places, if time allows during this implementation, it will be by choice whether to allow multi-search display or refresh per search, otherwise, for the time being, it will be on a multi-search display basis.
 
 - A history function(should time allow), will be implemented, and an anchor system used in conjuction with the history container to allow links to previous searches on the multi_search display option, such that if a recent search term re-appears, the app automatically follows a link on the page to where the information is displayed. Another idea would be to check number of search terms above the current query, and if too many, just move the link to the bottom/current position of scrolling on the page to cater for comparison with content being currently viewed.
+
+- Due to time constraint, some of these features may not have been implemented yet, but the site is locally functional. There isn't much code seperation as most of the code is in one file, so seperation of each layer would be the next step from here, then optimization of the code.
