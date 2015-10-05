@@ -59,6 +59,7 @@
 		var countries;
 		var color_size;
 		var cardinal_directions;
+		var search_elements = 0;
 		
 		// variable to keep track of previous searches and resulting location names
 		// index by city and country name
@@ -192,14 +193,26 @@
 			t_info_row.appendChild(t_para);
 			t_info_row.appendChild(t_para2);
 			
+			// increase number of search elements before this section
+			search_elements += 1;
+			
 			// create a column for the extra info button
 			var t_info_d = document.createElement("td");
 			var t_info_btn = document.createElement("button");
+			
 			t_info_btn.innerHTML = "<b>EXTRA<br>INFO :<b>";
 			t_info_d.appendChild(t_info_btn);
 			
-			// create a column to hold extra information
+			// create a collapsible column to hold extra information
 			var t_info_d2 = document.createElement("td");
+			
+			t_info_d2.id = "collapse_info" + search_elements;
+			t_info_d2.style.visibility = "hidden";
+			t_info_btn.onclick = function()
+			{
+				col = document.getElementById(t_info_d2.id);
+				toggleVis(col);
+			}
 			
 			// get human readable time for sunset and sunrise
 			var sunrise_date = new Date( json.sys.sunrise * 1000);
@@ -229,6 +242,18 @@
 			
 			// append the division to the document
 			document.getElementById("content pane").appendChild(/*new*/cont_div);
+		}
+		
+		function toggleVis(col)
+		{
+			if(col.style.visibility == "hidden")
+			{
+				col.style.visibility = "visible";
+			}
+			else
+			{
+				col.style.visibility = "hidden";
+			}
 		}
 		
 		function get_weather_icon(icon_id)
