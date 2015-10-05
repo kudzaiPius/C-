@@ -1,6 +1,6 @@
-- The url general description for getting the weather description image from openweather api is given, therefore there was no need to look for alternative representations that map to each decription.
+- The url general description for getting the weather description image from openweather api is given, therefore there was no need to look for alternative representations that map to each description.
 
-- The search tem(user input) is also kept for each search, and displayed in some capacity to remove any confusion with city names not matching search term, for example, 'Goromonzi', yields another city called 'Epworth' in Zimbabwe, but the 2 places (viewed as suburbs) are not close, and thus this might be a source of confusion.
+- The search term(user input) is also kept for each search, and displayed in some capacity to remove any confusion with city names not matching search term, for example, 'Goromonzi', yields another city called 'Epworth' in Zimbabwe, but the 2 places (viewed as suburbs) are not close, and thus this might be a source of confusion.
 
 - On the other hand, the 'find' query that was used as a guide to how an optimal display would look like does not contain information on flag icons, therefore an alternative was to get a flag directory from another source, and use the country code information to map each country to a flag icon in a way similar to how we got the weather description icon, but referencing a local source. This was later shelved, as since the image for each country is viewable on each find page, it would imply there is a way to get the flags from the source the api site itself uses. Thus, by using the inspector, the flags directory in images was found, and references deducted from a few searches.
 
